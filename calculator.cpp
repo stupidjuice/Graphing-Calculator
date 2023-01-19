@@ -1,15 +1,21 @@
 #include <raylib.h>
 #include <iostream>
 #include <math.h>
+#include "graphdrawer.hpp"
 
 int main(void)
 {
     //random vars i need
     float g_epsilon = 0.001f;
     float linedist = 0.0f;
+    int shiftDistInBoxes = 0.0f;
+    float shiftIntoScreenX = 0.0f;
+    float shiftIntoScreenY = 0.0f;;
 
     //graphics options
     float lineThickness = 2;
+    float textOffset = 4;
+    int textSize = 14;
 
     //control options
     float scrollSensitivity = 0.5f;
@@ -31,8 +37,10 @@ int main(void)
     while (!WindowShouldClose())
     {
         //variable updates
-        if (IsKeyDown(KEY_UP)) windowPos.y += 2.0f;
-        if (IsKeyDown(KEY_DOWN)) windowPos.y -= 2.0f;
+        if (IsKeyDown(KEY_W)) windowPos.y += 2.0f;
+        if (IsKeyDown(KEY_S)) windowPos.y -= 2.0f;
+        if (IsKeyDown(KEY_A)) windowPos.x += 2.0f;
+        if (IsKeyDown(KEY_D)) windowPos.x -= 2.0f;
 
         windowZoom -= GetMouseWheelMove() * scrollSensitivity;
         
@@ -46,18 +54,22 @@ int main(void)
         ClearBackground(WHITE);
 
         //draw
-        //horizontal grid lines
         linedist = screenHeight / windowZoom;
-        for(int i = 0; i < ceilf(windowZoom + 1.0f); i++)
-        {
-            DrawLineEx({0, (float)i * linedist + fmod(windowPos.y, screenHeight / windowZoom)}, {screenWidth, (float)i * linedist + fmod(windowPos.y, screenHeight / windowZoom)}, lineThickness, LIGHTGRAY);
-        }
 
-        //vertical grid lines
-        for(int i = 0; i < ceilf(windowZoom * aspectRatio + 1.0f); i++)
-        {
-            DrawLineEx({(float)i * linedist + fmod(windowPos.x, screenHeight / windowZoom), 0}, {(float)i * linedist + fmod(windowPos.x, screenHeight / windowZoom), screenHeight}, lineThickness, LIGHTGRAY);
-        }
+        //grid lines
+        DrawHorizontalGridLines(ceil(windowZoom + 1.0f), linedist, windowPos.y, screenWidth, lineThickness);
+        DrawVerticalGridLines(ceil(windowZoom * aspectRatio + 1.0f), linedist, windowPos.x, screenHeight, lineThickness);
+
+        //draw labels
+        //x axis lables
+        shiftDistInBoxes = ceil(windowPos.x / linedist);
+        shiftIntoScreenX = windowPos.x - shiftDistInBoxes * linedist + textOffset;
+        DrawXAxisLabels(ceil(windowZoom * aspectRatio + 1.0f), screenHeight, windowPos.y, textOffset, textSize, shiftDistInBoxes, shiftIntoScreenX, linedist);
+
+        //y axis labels
+        shiftDistInBoxes = ceil(windowPos.y / linedist);
+        shiftIntoScreenY = windowPos.y - shiftDistInBoxes * linedist + textOffset;
+
         //axis lines
         DrawLineEx({windowPos.x, 0}, {windowPos.x, screenHeight}, lineThickness, BLACK);
         DrawLineEx({0, windowPos.y}, {screenWidth, windowPos.y}, lineThickness, BLACK);
