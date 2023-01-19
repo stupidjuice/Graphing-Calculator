@@ -30,11 +30,11 @@ void DrawXAxisLabels(float numLabels, int screenHeight, float ypos, float textOf
         //I REFUSE TO USE TERNARY OPERATORS
         if(ypos + textOffset - textSize < 0)
         {
-            DrawText(TextFormat("%i", i - shiftDistInBoxes), linedist * i + shiftIntoScreenX, ypos + textOffset, textSize, BLACK);
+            DrawText(TextFormat("%i", i - shiftDistInBoxes), linedist * i + shiftIntoScreenX, (textSize / 2) + textOffset, textSize, BLACK);
         }
-        else if (ypos + textOffset - textSize > screenHeight)
+        else if (ypos + textOffset + textSize > screenHeight)
         {
-            DrawText(TextFormat("%i", i - shiftDistInBoxes), linedist * i + shiftIntoScreenX, ypos + textOffset, textSize, BLACK);
+            DrawText(TextFormat("%i", i - shiftDistInBoxes), linedist * i + shiftIntoScreenX, screenHeight - textSize - textOffset, textSize, BLACK);
         }
         else
         {
